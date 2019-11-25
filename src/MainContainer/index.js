@@ -254,19 +254,22 @@ class MainContainer extends Component {
 			alert(deleteMealParsed.status.message);
 		}
 
-		for(let i = 0; i < foodItems.length; i++){
-			const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
-				method: 'DELETE',
-				credentials: 'include'
-			});
-			const deleteFoodItemParsed = await deleteFoodItemResponse.json();
-			console.log(deleteFoodItemParsed)
 
-			if (deleteFoodItemParsed.status.code === 200){
-				console.log(deleteFoodItemParsed, ' response from Flask server')
-				this.setState({foodItems: this.state.foodItems.filter((foodItem) => foodItem.id !== foodItems[i].id)})
-			} else {
-				alert(deleteFoodItemParsed.status.message);
+		for(let i = 0; i < foodItems.length; i++){
+			if(foodItems[i].meal.id === id){
+				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
+					method: 'DELETE',
+					credentials: 'include'
+				});
+				const deleteFoodItemParsed = await deleteFoodItemResponse.json();
+				console.log(deleteFoodItemParsed)
+
+				if (deleteFoodItemParsed.status.code === 200){
+					console.log(deleteFoodItemParsed, ' response from Flask server')
+					this.setState({foodItems: this.state.foodItems.filter((foodItem) => foodItem.id !== foodItems[i].id)})
+				} else {
+					alert(deleteFoodItemParsed.status.message);
+				}
 			}
 		}
 	}
