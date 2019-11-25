@@ -1,0 +1,9 @@
+.closeIcon {
+  display: inline-flex;
+  float: right;
+  padding: 0 25px;
+}
+
+.foodList {
+  list-style: none;
+}
