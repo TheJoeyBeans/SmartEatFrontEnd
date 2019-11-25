@@ -29,7 +29,7 @@ class MainContainer extends Component {
 	}
 	getMeals = async () => {
 		try {
-			const meals = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/', {
+			const meals = await fetch(process.env.REACT_APP_API_URL + '/api/v1/meals/', {
 				credentials: 'include',
 				method: 'GET'
 			});
@@ -43,7 +43,7 @@ class MainContainer extends Component {
 	}
 	getFoodItems = async () => {
 		try {
-			const foodItems = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/', {
+			const foodItems = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/', {
 				credentials: 'include', 
 				method: 'GET'
 			});
@@ -85,7 +85,7 @@ class MainContainer extends Component {
 		}
 		e.preventDefault();
 		try {
-			const createdMealResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/', {
+			const createdMealResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/meals/', {
 				method: 'POST',
 				credentials: 'include',
 				body: JSON.stringify(mealBody),
@@ -119,7 +119,7 @@ class MainContainer extends Component {
 					'food_unique_id': mealList[i].foodId,
 					'meal': mealId
 				}
-				const createdFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/', {
+				const createdFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/', {
 					method: 'POST', 
 					credentials: 'include',
 					body: JSON.stringify(foodBody),
@@ -155,7 +155,7 @@ class MainContainer extends Component {
 		e.preventDefault();
 
 		try{
-			const editMealUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
+			const editMealUrl = `${process.env.REACT_APP_API_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
 			const editResponse = await fetch(editMealUrl, {
 				method: 'PUT',
 				credentials: 'include',
@@ -195,7 +195,7 @@ class MainContainer extends Component {
 					'food_unique_id': mealList[i].food_unique_id,
 					'meal': mealId
 				}
-				const editFoodItemUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/meals/${this.state.foodItemsToEdit.id}/`;
+				const editFoodItemUrl = `${process.env.REACT_APP_API_URL}/api/v1/meals/${this.state.foodItemsToEdit.id}/`;
 				console.log(editFoodItemUrl, "this is the edit url")
 				const editResponse = await fetch(editFoodItemUrl, {
 					method: 'PUT',
@@ -240,7 +240,7 @@ class MainContainer extends Component {
 	deleteMeal = async (id, foodItems) => {
 		console.log(id, "This is the meal ID")
 		console.log(foodItems, "this is the foodItems of the meal")
-		const deleteMealResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/' + id +'/', {
+		const deleteMealResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/meals/' + id +'/', {
 			method: 'DELETE',
 			credentials: 'include'
 		});
@@ -255,7 +255,7 @@ class MainContainer extends Component {
 		}
 
 		for(let i = 0; i < foodItems.length; i++){
-			const deleteFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
+			const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
 				method: 'DELETE',
 				credentials: 'include'
 			});
