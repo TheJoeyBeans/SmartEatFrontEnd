@@ -78,7 +78,7 @@ class MakeMealForm extends Component {
 				<Modal.Content>
 					<Form>
 						<Label>Which meal is this?</Label>
-						<Icon className='closeIcon' name='close' onClick={this.props.closeNoEdit}/>
+						<Icon className='closeIcon' name='close' size="large" onClick={this.props.closeNoEdit}/>
 							<select name='meal_type' onChange={this.handleMealType} className="ui dropdown">
 								<option value="breakfast">Breakfast</option>
 								<option value="lunch">Lunch</option>
@@ -88,7 +88,7 @@ class MakeMealForm extends Component {
 						<Label>What are you eating?</Label><br/>
 							<Search name='input' onSearchChange={this.handleChange} placeholder='Search'/>
 							<Button onClick={this.fetchSearchResults}>Add Food</Button>
-							<li>{addedFood}</li>
+							<li className='foodList'>{addedFood}</li>
 						<Button type='Submit' onClick={(e) => {
 								this.props.close(e, this.state); 
 								this.resetState();

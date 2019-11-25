@@ -18,9 +18,9 @@ function MealList(props){
 		});
 
 		return (
-			<Grid.Column>
-				<Card key={meal.id}>
-					<Card.Content>
+			<Grid.Column className='mealList'>
+				<Card className='mealListItem' key={meal.id}>
+					<Card.Content className='mealListDescription'>
 						<Card.Header>{meal.meal_type}</Card.Header>
 						<Card.Description>
 						For {meal.meal_type}, you ate:<br/>
@@ -31,8 +31,8 @@ function MealList(props){
 						</Card.Description>
 					</Card.Content>
 					<Card.Content extra>
-						<Button onClick={() => props.openAndEdit(meal, props.foodItems)}>Edit Meal</Button>
-						<Button onClick={() => props.deleteMeal(meal.id, props.foodItems)}>Delete Meal</Button>
+						<Button floated='left' className='listButton' size='small' onClick={() => props.openAndEdit(meal, props.foodItems)}>Edit Meal</Button>
+						<Button floated='right' className='listButton' size='small' onClick={() => props.deleteMeal(meal.id, props.foodItems)}>Delete Meal</Button>
 					</Card.Content>
 				</Card>
 			</Grid.Column>

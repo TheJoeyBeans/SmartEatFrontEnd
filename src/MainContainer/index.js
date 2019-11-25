@@ -4,7 +4,7 @@ import MakeMealForm from '../MakeMealForm';
 import EditMealForm from '../EditMealForm';
 import MealList from '../MealList';
 import MainHeader from '../MainHeader';
-import { Grid } from 'semantic-ui-react';
+import { Grid, Header } from 'semantic-ui-react';
 
 class MainContainer extends Component {
 	constructor(props){
@@ -273,17 +273,14 @@ class MainContainer extends Component {
 	render(){
 		return(
 			<div>
-				<header>
-					<MealSearch />
-					<MainHeader meals={this.state.meals} openAndCreate={this.openAndCreate}/>
-				</header>
-				<Grid columns={3}>	
+				<MainHeader meals={this.state.meals} openAndCreate={this.openAndCreate}/>
+				<Grid className='mealList' columns={3} divided textAlign='center' verticalAlign='top'>	
 					<Grid.Row>
 						<MealList meals={this.state.meals} foodItems={this.state.foodItems} openAndEdit={this.openAndEdit} deleteMeal={this.deleteMeal}/>
 					</Grid.Row>
+				</Grid>
 					<MakeMealForm open={this.state.showMakeMealModal} close={this.closeModalAndMakeMeal} closeNoEdit={this.closeModal}/>
 					<EditMealForm meal={this.state.mealToEdit} foodItems={this.state.foodItemsToEdit} open={this.state.showEditMealModal} close={this.closeModalAndEditMeal} closeNoEdit={this.closeModal}/>
-				</Grid>
 			</div>
 		)
 	}

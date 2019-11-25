@@ -81,7 +81,7 @@ class EditMealForm extends Component {
 				<Modal.Content>
 					<Form>
 						<Label>Edit your meal</Label><br/>
-						<Icon className='closeIcon' name='close' onClick={this.props.closeNoEdit}/>
+						<Icon className='closeIcon' name='close' size="large" onClick={this.props.closeNoEdit}/>
 							<select name='meal_type' onChange={this.handleMealType} className="ui dropdown">
 								<option value="breakfast">Breakfast</option>
 								<option value="lunch">Lunch</option>
@@ -91,7 +91,7 @@ class EditMealForm extends Component {
 						<Label>What are you eating?</Label>
 							<Search name='input' onSearchChange={this.handleChange} placeholder='Search'/>
 							<Button onClick={this.fetchSearchResults}>Add Food</Button>
-							<li>{addedFood}</li>
+							<li className='foodList'>{addedFood}</li>
 						<Button type='Submit' onClick={(e) => {
 								this.props.close(e, this.state); 
 							}}>Finish Edits</Button>
