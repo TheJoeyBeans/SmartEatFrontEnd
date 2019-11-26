@@ -23,7 +23,7 @@ class Login extends Component {
   // Submission of login form
   handleSubmit = async (e) => {
     e.preventDefault();
-    const loginUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/user/login`; // localhost:8000/api/v1/user/register
+    const loginUrl = `${process.env.REACT_BACKEND_API_URL}/api/v1/user/login`; // localhost:8000/api/v1/user/register
     const loginResponse = await fetch(loginUrl, {
       method: 'POST',
       body: JSON.stringify(this.state),
@@ -49,6 +49,7 @@ class Login extends Component {
   render() {
     return (
       <Form onSubmit={this.handleSubmit}>
+      <Link to='/'>Register Here</Link>
         <h4>Sign In</h4>
         <Label>Email</Label>
         <Form.Input type="email" name="email" onChange={this.handleChange} required />
@@ -56,7 +57,6 @@ class Login extends Component {
         <Form.Input type="password" name="password" onChange={this.handleChange} required />
         <Button type="submit" color="green">Login</Button><br/>
         { this.state.errorMsg ? <Message negative>{this.state.errorMsg}</Message> : null }
-        <Link to='/'>Register Here</Link>
       </Form>
     )
   }

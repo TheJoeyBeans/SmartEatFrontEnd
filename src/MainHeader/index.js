@@ -13,7 +13,7 @@ function MainHeader(props){
 		<Header>
 			<Segment style={{backgroundColor: '#339966', height: '60px'}}>
 				<Button className='headerButton' floated='left' onClick={props.openAndCreate}>Make a Meal</Button>
-				<Button className='headerButton' floated='right'>Log Out</Button>
+				<Button className='headerButton' floated='right' onClick={props.logOut}>Log Out</Button>
 			</Segment>
 			<div className='totalCalories'>
 				<Label size='large'>Your total number of calories today is: {totalCalories}</Label>

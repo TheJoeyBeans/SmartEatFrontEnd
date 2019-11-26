@@ -23,7 +23,8 @@ class Register extends Component {
   // Submission of register in form
   handleSubmit = async (e) => {
     e.preventDefault();
-    const registrationUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/user/register`; // localhost:8000/api/v1/user/register
+    const registrationUrl = `${process.env.REACT_BACKEND_API_URL}/api/v1/user/register`; // localhost:8000/api/v1/user/register
+    console.log(registrationUrl)
     const registerResponse = await fetch(registrationUrl, {
       method: 'POST',
       body: JSON.stringify(this.state),
@@ -49,6 +50,7 @@ class Register extends Component {
   render() {
     return (
       <Form onSubmit={this.handleSubmit}>
+        <Link to='/login'>Sign in here</Link>
         <h4>Register New User</h4>
         <Label>Email</Label>
         <Form.Input type="email" name="email" onChange={this.handleChange} required />
@@ -56,7 +58,6 @@ class Register extends Component {
         <Form.Input type="password" name="password" onChange={this.handleChange} required />
         <Button type="submit" color="green">Sign Up</Button><br/>
         { this.state.errorMsg ? <Message negative>{this.state.errorMsg}</Message> : null }
-        <Link to='/login'>Sign in here</Link>
       </Form>
     )
   }

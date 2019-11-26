@@ -5,6 +5,7 @@ import EditMealForm from '../EditMealForm';
 import MealList from '../MealList';
 import MainHeader from '../MainHeader';
 import { Grid, Header } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 class MainContainer extends Component {
 	constructor(props){
@@ -26,6 +27,7 @@ class MainContainer extends Component {
 	componentDidMount(){
 		this.getMeals();
 		this.getFoodItems();
+		// this.handleLogout();
 	}
 	getMeals = async () => {
 		try {
@@ -156,7 +158,7 @@ class MainContainer extends Component {
 		e.preventDefault();
 
 		try{
-			const editMealUrl = `${process.env.REACT_BACKEND_API_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
+			const editMealUrl = `${process.env.REACT_APP_API_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
 			const editResponse = await fetch(editMealUrl, {
 				method: 'PUT',
 				credentials: 'include',
@@ -329,10 +331,14 @@ class MainContainer extends Component {
 			});
 		}	
 	}
+	handleLogout = (e) => {
+		localStorage.setItem('sessionUserId', null);
+		this.props.history.push('/login');
+	}
 	render(){
 		return(
 			<div>
-				<MainHeader meals={this.state.meals} openAndCreate={this.openAndCreate}/>
+				<MainHeader meals={this.state.meals} openAndCreate={this.openAndCreate} logOut={this.handleLogout}/>
 				<Grid className='mealList' columns={3} divided textAlign='center' verticalAlign='top'>	
 					<Grid.Row>
 						<MealList meals={this.state.meals} foodItems={this.state.foodItems} openAndEdit={this.openAndEdit} deleteMeal={this.deleteMeal}/>
