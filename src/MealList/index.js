@@ -4,7 +4,6 @@ import { Card, Button, Grid } from 'semantic-ui-react';
 function MealList(props){
 	console.log(props.meals, "meal props")
 	console.log(props.foodItems, "foodItem props")
-	
 	const meals = props.meals.map((meal) => {
 		const foodItems = props.foodItems.map((foodItem, i) =>{
 			if(meal.id === foodItem.meal.id){

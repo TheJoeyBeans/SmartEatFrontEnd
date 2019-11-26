@@ -37,6 +37,8 @@ class Login extends Component {
   
     if (parsedResponse.status.code === 200) {
       console.log('Sign up successful');
+      console.log(parsedResponse.data.id, 'userId');
+      localStorage.setItem('sessionUserId', parsedResponse.data.id);
       this.props.history.push('/meals'); // Change url to /dogs programmatically with react-router
     } else {
       // Else display error message to the user

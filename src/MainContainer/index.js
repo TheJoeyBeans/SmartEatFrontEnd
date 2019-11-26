@@ -6,6 +6,8 @@ import MealList from '../MealList';
 import MainHeader from '../MainHeader';
 import { Grid, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+const sessId = localStorage.getItem('sessionUserId');
+console.log(sessId);
 
 class MainContainer extends Component {
 	constructor(props){
@@ -36,9 +38,8 @@ class MainContainer extends Component {
 				method: 'GET'
 			});
 			const parsedMeals = await meals.json();
-			this.setState({
-				meals: parsedMeals.data
-			})
+			console.log(parsedMeals.data, 'this is parsedMeals')
+			this.setState({meals: parsedMeals.data.filter((meal) => meal.creator.id === sessId)})
 		} catch(err){
 			console.log(err);
 		}
@@ -50,9 +51,8 @@ class MainContainer extends Component {
 				method: 'GET'
 			});
 			const parsedFoodItems = await foodItems.json();
-			this.setState({
-				foodItems: parsedFoodItems.data
-			})
+			console.log(parsedFoodItems.data, "this is parsed foodItems")
+			this.setState({foodItems: parsedFoodItems.data.filter((foodItem) => foodItem.creator.id === sessId)})
 		} catch(err){
 			console.log(err);
 		}
@@ -158,7 +158,7 @@ class MainContainer extends Component {
 		e.preventDefault();
 
 		try{
-			const editMealUrl = `${process.env.REACT_APP_API_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
+			const editMealUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
 			const editResponse = await fetch(editMealUrl, {
 				method: 'PUT',
 				credentials: 'include',
@@ -332,7 +332,7 @@ class MainContainer extends Component {
 		}	
 	}
 	handleLogout = (e) => {
-		localStorage.setItem('sessionUserId', null);
+		localStorage.setItem('sessionId', null);
 		this.props.history.push('/login');
 	}
 	render(){
