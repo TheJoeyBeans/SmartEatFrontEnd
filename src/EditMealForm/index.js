@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Search, Form, Button, Label, Modal, Icon } from 'semantic-ui-react';
+import { Form, Button, Label, Modal, Icon } from 'semantic-ui-react';
 import { Searchbar } from 'react-native-paper';
 import axios from 'axios';
 const apiKey = 'dc1e6e6904af11f3792ca4dad0a5495b';
@@ -104,7 +104,7 @@ class EditMealForm extends Component {
 								<option value="snack">Snack</option>
 							</select>
 						<Label>What are you eating?</Label>
-							<Search name='input' onSearchChange={this.handleChange} placeholder='Search'/>
+							<Searchbar  name='input' onChange={this.handleChange} placeholder='Search'/>
 							<Button onClick={this.fetchSearchResults}>Add Food</Button>
 							<li className='foodList'>{addedFood}</li>
 						<Button type='Submit' onClick={(e) => {
