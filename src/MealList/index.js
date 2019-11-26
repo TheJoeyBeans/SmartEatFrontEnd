@@ -21,9 +21,8 @@ function MealList(props){
 			<Grid.Column className='mealList'>
 				<Card className='mealListItem' key={meal.id}>
 					<Card.Content className='mealListDescription'>
-						<Card.Header>{meal.meal_type}</Card.Header>
+						<Card.Header>For {meal.meal_type}, you ate:</Card.Header>
 						<Card.Description>
-						For {meal.meal_type}, you ate:<br/>
 						<ul>
 							{ foodItems }
 						</ul><br/>

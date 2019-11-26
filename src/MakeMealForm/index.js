@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Search, Form, Button, Label, Modal, Icon } from 'semantic-ui-react';
-// import { Searchbar } from 'react-native-paper';
+import { Form, Button, Label, Modal, Icon, Grid } from 'semantic-ui-react';
+import { Searchbar } from 'react-native-paper';
 import axios from 'axios';
 const apiKey = 'dc1e6e6904af11f3792ca4dad0a5495b';
 const apiId = '230690a4';
@@ -65,37 +65,47 @@ class MakeMealForm extends Component {
 		const addedFood = this.state.food.map((food, i) =>{
 			return(
 				<div key={i}>
-				<ul>
-					Name: {food.foodName}<br/>
-					Calories: {food.foodCalories}
-				</ul>
-				<Button onClick={() => this.removeFood(food.foodId)}>Delete Food</Button>
+				<Grid.Row>
+					<ul style={{margin: '10px 0px'}}>
+						Name: {food.foodName}<br/>
+						Calories: {food.foodCalories}
+					</ul><br/>
+					<Button size='small' style={{margin: '10px 0px'}} onClick={() => this.removeFood(food.foodId)}>Delete Food</Button><br/>
+				</Grid.Row>
 				</div>
 			)
 		})
 		return(
+			<Grid columns='equal'>
 			<Modal className='editModal' open={this.props.open}>
 				<Modal.Content>
 					<Form>
-						<Label>Which meal is this?</Label>
-						<Icon className='closeIcon' name='close' size="large" onClick={this.props.closeNoEdit}/>
-							<select name='meal_type' onChange={this.handleMealType} className="ui dropdown">
-								<option value="breakfast">Breakfast</option>
-								<option value="lunch">Lunch</option>
-								<option value="dinner">Dinner</option>
-								<option value="snack">Snack</option>
-							</select><br/>
-						<Label>What are you eating?</Label><br/>
-							<Search name='input' onSearchChange={this.handleChange} placeholder='Search'/>
-							<Button onClick={this.fetchSearchResults}>Add Food</Button>
-							<li className='foodList'>{addedFood}</li>
-						<Button type='Submit' onClick={(e) => {
+						<Grid.Row>
+						<Label className='mealListLabel'>Which meal is this?</Label>
+							<Icon className='closeIcon' name='close' size="large" onClick={this.props.closeNoEdit}/><br/>
+								<select style={{margin: '15px 0px'}} name='meal_type' onChange={this.handleMealType} className="ui dropdown">
+									<option value="breakfast">Breakfast</option>
+									<option value="lunch">Lunch</option>
+									<option value="dinner">Dinner</option>
+									<option value="snack">Snack</option>
+								</select><br/>
+						</Grid.Row>
+						<Grid.Row>
+							<Label style={{margin: '0 0 15px 0'}}>What are you eating?</Label><br/>
+								<Searchbar name='input' onChange={this.handleChange} placeholder='Search for food'/><br/>
+								<Button size='small' style={{margin: '10px 0px'}} onClick={this.fetchSearchResults}>Add Food</Button><br/>
+						</Grid.Row>
+								<li className='foodList'>{addedFood}</li>
+						<Grid.Row>
+						<Button floated='right' style={{margin: '10px 0px'}}type='Submit' onClick={(e) => {
 								this.props.close(e, this.state); 
 								this.resetState();
 							}}>Complete Meal</Button>
+						</Grid.Row>
 					</Form>
 				</Modal.Content>
 			</Modal>
+			</Grid>
 		)
 	}
 }

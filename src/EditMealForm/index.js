@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Search, Form, Button, Label, Modal, Icon } from 'semantic-ui-react';
+import { Form, Button, Label, Modal, Icon } from 'semantic-ui-react';
 import { Searchbar } from 'react-native-paper';
 import axios from 'axios';
 const apiKey = 'dc1e6e6904af11f3792ca4dad0a5495b';
@@ -13,6 +13,7 @@ class EditMealForm extends Component {
 			meal_type: '',
 			mealId: '',
 			food: [],
+			foodItemsToDelete: [],
 			query: ''
 		}
 	}
@@ -58,11 +59,25 @@ class EditMealForm extends Component {
 			})
 		})
 	}
-	removeFood = (i) => {
+	removeFood = (i, foodItems) => {
 		console.log(i)
+		console.log(foodItems)
 		this.setState({
-			food: this.state.food.filter((food) => food.food_unique_id !== i)
-		})
+			food: this.state.food.filter((food) => food.food_unique_id !== i),
+		});
+		if(foodItems.id != null){
+			this.setState(state =>{
+				const foodItemsToDelete = state.foodItemsToDelete.concat({
+					food_name: foodItems.food_name,
+					food_calories: foodItems.food_calories,
+					food_unique_id: foodItems.food_unique_id,
+					id: foodItems.id
+				});
+				return{
+					foodItemsToDelete
+				}
+			});
+		}
 	}
 	render(){
 		const addedFood = this.state.food.map((food, i) =>{
@@ -72,7 +87,7 @@ class EditMealForm extends Component {
 					Name: {food.food_name}<br/>
 					Calories: {food.food_calories}
 				</ul>
-				<Button onClick={() => this.removeFood(food.food_unique_id)}>Delete Food</Button>
+				<Button onClick={() => this.removeFood(food.food_unique_id, food)}>Delete Food</Button>
 				</div>
 			)
 		})
@@ -89,11 +104,12 @@ class EditMealForm extends Component {
 								<option value="snack">Snack</option>
 							</select>
 						<Label>What are you eating?</Label>
-							<Search name='input' onSearchChange={this.handleChange} placeholder='Search'/>
+							<Searchbar  name='input' onChange={this.handleChange} placeholder='Search'/>
 							<Button onClick={this.fetchSearchResults}>Add Food</Button>
 							<li className='foodList'>{addedFood}</li>
 						<Button type='Submit' onClick={(e) => {
-								this.props.close(e, this.state); 
+								this.props.close(e, this.state);
+								this.props.delete(this.state.foodItemsToDelete);
 							}}>Finish Edits</Button>
 					</Form>
 				</Modal.Content>
@@ -103,4 +119,3 @@ class EditMealForm extends Component {
 }
 
 export default EditMealForm
-

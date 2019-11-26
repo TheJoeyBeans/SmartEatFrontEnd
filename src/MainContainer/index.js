@@ -67,9 +67,9 @@ class MainContainer extends Component {
 				meal_type: mealFromTheList.meal_type,
 				calories: mealFromTheList.calories
 			}, 
-			foodItemsToEdit: foodItems,
 			showEditMealModal: true
-		})
+		});
+		this.setState({foodItemsToEdit: foodItems.filter((foodItem) => foodItem.meal.id === mealFromTheList.id)})
 	}
 	closeModalAndMakeMeal = async (e, meal) =>{
 		const mealKind = meal.meal_type;
@@ -148,6 +148,7 @@ class MainContainer extends Component {
 		for(let i = 0; i < meal.food.length; i++){
 			totalCal += meal.food[i].food_calories
 		}
+		console.log(totalCal, 'this is total calories')
 		const mealBody = {
 			'meal_type' : mealKind,
 			'calories' : totalCal
@@ -177,16 +178,22 @@ class MainContainer extends Component {
 			console.log(newMealsListWithEdit, "This is the newMealsListWithEdit");
 			this.setState({
 				showEditMealModal: false,
-				meals: newMealsListWithEdit
+				meals: newMealsListWithEdit,
+				mealToEdit: {
+					id: '',
+					meal_type: '',
+					calories: ''
+				}
 			});
 		} catch(err){
 			console.log(err)
 		}
-		this.editFoodItem(mealId, mealList);
+		this.editFoodItem(e, mealId, mealList);
 	}
-	editFoodItem = async (mealId, mealList) => {
+	editFoodItem = async (e, mealId, mealList) => {
 	console.log(mealId, "<--mealId");
 	console.log(mealList, "<--mealList");
+
 		try {
 			for(let i = 0; i < mealList.length; i++){
 				const foodBody = {
@@ -195,29 +202,57 @@ class MainContainer extends Component {
 					'food_unique_id': mealList[i].food_unique_id,
 					'meal': mealId
 				}
-				const editFoodItemUrl = `${process.env.REACT_APP_API_URL}/api/v1/meals/${this.state.foodItemsToEdit.id}/`;
-				console.log(editFoodItemUrl, "this is the edit url")
-				const editResponse = await fetch(editFoodItemUrl, {
-					method: 'PUT',
-					credentials: 'include',
-					body: JSON.stringify(foodBody),
-					headers: {
-						'Content-Type' : 'application/json'
+					const foodItemId = mealList[i].id
+					console.log(foodBody, "this is foodBody")
+					console.log(foodItemId, "this is foodItemId")
+				if(foodItemId != null){
+					const editFoodItemUrl = `${process.env.REACT_APP_API_URL}/api/v1/foodItems/${foodItemId}/`;
+					console.log(editFoodItemUrl, "this is the edit url")
+					const editResponse = await fetch(editFoodItemUrl, {
+						method: 'PUT',
+						credentials: 'include',
+						body: JSON.stringify(foodBody),
+						headers: {
+							'Content-Type' : 'application/json'
+						}
+					});
+					console.log(editResponse, "this is the edit response")
+					const editResponseParsed = await editResponse.json();
+					console.log(editResponseParsed, 'parsed edit for foodItems')
+					const newFoodItemsListWithEdit = this.state.foodItems.map((foodItem) =>{
+						if(foodItem.id === editResponseParsed.data.id){
+							foodItem = editResponseParsed.data
+						}
+						return foodItem
+					});
+					console.log(newFoodItemsListWithEdit, "this is the new food items list with the edit")
+					this.setState({
+						foodItems: newFoodItemsListWithEdit, 
+						foodItemsToEdit: []
+					});
+				} else {
+					const NewFoodBody = {
+						'food_name': mealList[i].food_name ,
+						'food_calories': mealList[i].food_calories,
+						'food_unique_id': mealList[i].food_unique_id,
+						'meal': mealId
 					}
-				});
-				console.log(editResponse, "this is the edit response")
-				const editResponseParsed = await editResponse.json();
-				console.log(editResponseParsed, 'parsed edit')
-				const newFoodItemsListWithEdit = this.state.foodItems.map((foodItem) =>{
-					if(foodItem.id === editResponseParsed.data.id){
-						foodItem = editResponseParsed.data
+					const createdFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/', {
+						method: 'POST', 
+						credentials: 'include',
+						body: JSON.stringify(NewFoodBody),
+						headers: {
+							'Content-Type' : 'application/json'
+						}
+					});
+					const parsedResponse = await createdFoodItemResponse.json();
+					console.log(parsedResponse, "this is the new foodItem")
+					if (parsedResponse.status.code === 201) {
+						this.setState({foodItems: [...this.state.foodItems, parsedResponse.data]})
+					} else {
+						alert(parsedResponse.status.message);
 					}
-					return foodItem
-				});
-				
-				this.setState({
-					foodItems: newFoodItemsListWithEdit
-				});
+				}
 			} 
 
 			} catch(err){
@@ -231,6 +266,7 @@ class MainContainer extends Component {
 			showMakeMealModal: false, 
 			showEditMealModal: false,
 			mealToEdit: {
+				id: '',
 				meal_type: '',
 				calories: ''
 			},
@@ -245,7 +281,7 @@ class MainContainer extends Component {
 			credentials: 'include'
 		});
 		const deleteMealParsed = await deleteMealResponse.json();
-		console.log(deleteMealParsed)
+		console.log(deleteMealParsed, "<---- this is deleteMealParsed")
 
 		if (deleteMealParsed.status.code === 200){
 			console.log(deleteMealParsed, ' response from Flask server')
@@ -255,20 +291,43 @@ class MainContainer extends Component {
 		}
 
 		for(let i = 0; i < foodItems.length; i++){
-			const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
-				method: 'DELETE',
-				credentials: 'include'
-			});
-			const deleteFoodItemParsed = await deleteFoodItemResponse.json();
-			console.log(deleteFoodItemParsed)
+			if(foodItems[i].meal.id === id){
+				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
+					method: 'DELETE',
+					credentials: 'include'
+				});
+				const deleteFoodItemParsed = await deleteFoodItemResponse.json();
+				console.log(deleteFoodItemParsed, "<---- this is deleteFoodItemParsed")
 
-			if (deleteFoodItemParsed.status.code === 200){
-				console.log(deleteFoodItemParsed, ' response from Flask server')
-				this.setState({foodItems: this.state.foodItems.filter((foodItem) => foodItem.id !== foodItems[i].id)})
-			} else {
-				alert(deleteFoodItemParsed.status.message);
+				if (deleteFoodItemParsed.status.code === 200){
+					console.log(deleteFoodItemParsed, ' deletedFoodItemParsed, response from Flask server')
+					this.setState({foodItems: this.state.foodItems.filter((foodItem) => foodItem.id !== foodItems[i].id)})
+				} else {
+					alert(deleteFoodItemParsed.status.message);
+				}
 			}
 		}
+	}
+	deleteFoodItem = async (foodItems) =>{
+		console.log(foodItems, "This is the food item you're trying to delete")
+		for(let i = 0; i < foodItems.length; i++){
+				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
+					method: 'DELETE',
+					credentials: 'include'
+				});
+				const deleteFoodItemParsed = await deleteFoodItemResponse.json();
+				console.log(deleteFoodItemParsed, "<---- this is deleteFoodItemParsed")
+
+				if (deleteFoodItemParsed.status.code === 200){
+					console.log(deleteFoodItemParsed, ' deletedFoodItemParsed, response from Flask server')
+					this.setState({foodItems: this.state.foodItems.filter((foodItem) => foodItem.id !== foodItems[i].id)})
+				} else {
+					alert(deleteFoodItemParsed.status.message);
+			}
+			this.setState({
+				foodItemsToEdit: []
+			});
+		}	
 	}
 	render(){
 		return(
@@ -280,7 +339,7 @@ class MainContainer extends Component {
 					</Grid.Row>
 				</Grid>
 					<MakeMealForm open={this.state.showMakeMealModal} close={this.closeModalAndMakeMeal} closeNoEdit={this.closeModal}/>
-					<EditMealForm meal={this.state.mealToEdit} foodItems={this.state.foodItemsToEdit} open={this.state.showEditMealModal} close={this.closeModalAndEditMeal} closeNoEdit={this.closeModal}/>
+					<EditMealForm delete={this.deleteFoodItem} meal={this.state.mealToEdit} foodItems={this.state.foodItemsToEdit} open={this.state.showEditMealModal} close={this.closeModalAndEditMeal} closeNoEdit={this.closeModal}/>
 			</div>
 		)
 	}
