@@ -23,7 +23,7 @@ class Login extends Component {
   // Submission of login form
   handleSubmit = async (e) => {
     e.preventDefault();
-    const loginUrl = `${process.env.REACT_BACKEND_API_URL}/api/v1/user/login`; // localhost:8000/api/v1/user/register
+    const loginUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/user/login`; // localhost:8000/api/v1/user/register
     const loginResponse = await fetch(loginUrl, {
       method: 'POST',
       body: JSON.stringify(this.state),
