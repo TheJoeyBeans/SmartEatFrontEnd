@@ -6,13 +6,11 @@ import MealList from '../MealList';
 import MainHeader from '../MainHeader';
 import { Grid, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-const sessId = localStorage.getItem('sessionUserId');
-console.log(sessId);
 
 class MainContainer extends Component {
 	constructor(props){
 		super(props);
-
+		
 		this.state = {
 			meals: [],
 			foodItems:[],
@@ -21,38 +19,53 @@ class MainContainer extends Component {
 				meal_type: '',
 				calories: ''
 			},
+			sessId: sessionStorage.getItem('sessionUserId'),
 			foodItemsToEdit: [],
 			showMakeMealModal: false,
 			showEditMealModal: false
 		}
 	}
+
 	componentDidMount(){
 		this.getMeals();
 		this.getFoodItems();
-		// this.handleLogout();
 	}
 	getMeals = async () => {
 		try {
-			const meals = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/', {
+			const meals = await fetch(process.env.REACT_APP_API_URL + '/api/v1/meals/', {
 				credentials: 'include',
 				method: 'GET'
 			});
 			const parsedMeals = await meals.json();
+			const parsedMealsList = [];
 			console.log(parsedMeals.data, 'this is parsedMeals')
-			this.setState({meals: parsedMeals.data.filter((meal) => meal.creator.id === sessId)})
+			for(let i = 0; i < parsedMeals.data.length; i++){
+				if(this.state.sessId === parsedMeals.data[i].creator.id.toString()){
+					parsedMealsList.push(parsedMeals.data[i]);
+				}
+			}
+			console.log(parsedMealsList, "this is the parsed meals list")
+			this.setState({meals: parsedMealsList});
 		} catch(err){
 			console.log(err);
 		}
 	}
 	getFoodItems = async () => {
 		try {
-			const foodItems = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/', {
+			const foodItems = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/', {
 				credentials: 'include', 
 				method: 'GET'
 			});
 			const parsedFoodItems = await foodItems.json();
+			const parsedFoodItemsList = [];
 			console.log(parsedFoodItems.data, "this is parsed foodItems")
-			this.setState({foodItems: parsedFoodItems.data.filter((foodItem) => foodItem.creator.id === sessId)})
+			for(let i = 0; i < parsedFoodItems.data.length; i++){
+				if(this.state.sessId === parsedFoodItems.data[i].creator.id.toString()){
+					parsedFoodItemsList.push(parsedFoodItems.data[i]);
+				}
+			}
+			console.log(parsedFoodItemsList, "this is the parsed food items list")
+			this.setState({foodItems: parsedFoodItemsList});
 		} catch(err){
 			console.log(err);
 		}
@@ -87,7 +100,7 @@ class MainContainer extends Component {
 		}
 		e.preventDefault();
 		try {
-			const createdMealResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/', {
+			const createdMealResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/meals/', {
 				method: 'POST',
 				credentials: 'include',
 				body: JSON.stringify(mealBody),
@@ -121,7 +134,7 @@ class MainContainer extends Component {
 					'food_unique_id': mealList[i].foodId,
 					'meal': mealId
 				}
-				const createdFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/', {
+				const createdFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/', {
 					method: 'POST', 
 					credentials: 'include',
 					body: JSON.stringify(foodBody),
@@ -158,7 +171,7 @@ class MainContainer extends Component {
 		e.preventDefault();
 
 		try{
-			const editMealUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
+			const editMealUrl = `${process.env.REACT_APP_API_URL}/api/v1/meals/${this.state.mealToEdit.id}/`;
 			const editResponse = await fetch(editMealUrl, {
 				method: 'PUT',
 				credentials: 'include',
@@ -208,7 +221,7 @@ class MainContainer extends Component {
 					console.log(foodBody, "this is foodBody")
 					console.log(foodItemId, "this is foodItemId")
 				if(foodItemId != null){
-					const editFoodItemUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/foodItems/${foodItemId}/`;
+					const editFoodItemUrl = `${process.env.REACT_APP_API_URL}/api/v1/foodItems/${foodItemId}/`;
 					console.log(editFoodItemUrl, "this is the edit url")
 					const editResponse = await fetch(editFoodItemUrl, {
 						method: 'PUT',
@@ -239,7 +252,7 @@ class MainContainer extends Component {
 						'food_unique_id': mealList[i].food_unique_id,
 						'meal': mealId
 					}
-					const createdFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/', {
+					const createdFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/', {
 						method: 'POST', 
 						credentials: 'include',
 						body: JSON.stringify(NewFoodBody),
@@ -278,7 +291,7 @@ class MainContainer extends Component {
 	deleteMeal = async (id, foodItems) => {
 		console.log(id, "This is the meal ID")
 		console.log(foodItems, "this is the foodItems of the meal")
-		const deleteMealResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/' + id +'/', {
+		const deleteMealResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/meals/' + id +'/', {
 			method: 'DELETE',
 			credentials: 'include'
 		});
@@ -294,7 +307,7 @@ class MainContainer extends Component {
 
 		for(let i = 0; i < foodItems.length; i++){
 			if(foodItems[i].meal.id === id){
-				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
+				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
 					method: 'DELETE',
 					credentials: 'include'
 				});
@@ -313,7 +326,7 @@ class MainContainer extends Component {
 	deleteFoodItem = async (foodItems) =>{
 		console.log(foodItems, "This is the food item you're trying to delete")
 		for(let i = 0; i < foodItems.length; i++){
-				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
+				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
 					method: 'DELETE',
 					credentials: 'include'
 				});
@@ -332,7 +345,7 @@ class MainContainer extends Component {
 		}	
 	}
 	handleLogout = (e) => {
-		localStorage.setItem('sessionId', null);
+		sessionStorage.clear();
 		this.props.history.push('/login');
 	}
 	render(){

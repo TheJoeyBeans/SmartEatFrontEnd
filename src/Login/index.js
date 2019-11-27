@@ -23,7 +23,7 @@ class Login extends Component {
   // Submission of login form
   handleSubmit = async (e) => {
     e.preventDefault();
-    const loginUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/user/login`; // localhost:8000/api/v1/user/register
+    const loginUrl = `${process.env.REACT_APP_API_URL}/api/v1/user/login`; // localhost:8000/api/v1/user/register
     const loginResponse = await fetch(loginUrl, {
       method: 'POST',
       body: JSON.stringify(this.state),
@@ -38,7 +38,8 @@ class Login extends Component {
     if (parsedResponse.status.code === 200) {
       console.log('Sign up successful');
       console.log(parsedResponse.data.id, 'userId');
-      localStorage.setItem('sessionUserId', parsedResponse.data.id);
+      sessionStorage.clear();
+      sessionStorage.setItem('sessionUserId', parsedResponse.data.id);
       this.props.history.push('/meals'); // Change url to /dogs programmatically with react-router
     } else {
       // Else display error message to the user
