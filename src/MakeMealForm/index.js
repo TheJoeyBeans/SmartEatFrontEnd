@@ -33,19 +33,23 @@ class MakeMealForm extends Component {
 			}
 		}).then(response =>{
 			console.log(response, "I am the response");
-			const foodUniqueId = response.data.parsed[0].food.foodId
-			const foodText = response.data.text;
-			const foodCal = response.data.parsed[0].food.nutrients.ENERC_KCAL
-			this.setState(state =>{
-				const food = state.food.concat({
-					foodId: foodUniqueId,
-					foodName: foodText,
-					foodCalories: foodCal
-				});
-				return{
-					food
-				}
-			})
+			if(response.data.parsed[0] === undefined){
+				alert('Food cannot be found!')
+			} else {
+				const foodUniqueId = response.data.parsed[0].food.foodId
+				const foodText = response.data.text;
+				const foodCal = response.data.parsed[0].food.nutrients.ENERC_KCAL
+				this.setState(state =>{
+					const food = state.food.concat({
+						foodId: foodUniqueId,
+						foodName: foodText,
+						foodCalories: foodCal
+					});
+					return{
+						food
+					}
+				})
+			}
 		})
 	}
 	resetState = () => {

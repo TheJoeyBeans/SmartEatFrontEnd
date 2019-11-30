@@ -52,16 +52,18 @@ class Register extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Link to='/login'>Sign in here</Link>
-        <h4>Register New User</h4>
-        <Label>Email</Label>
-        <Form.Input type="email" name="email" onChange={this.handleChange} required />
-        <Label>Password</Label>
-        <Form.Input type="password" name="password" onChange={this.handleChange} required />
-        <Button type="submit" color="green">Sign Up</Button><br/>
-        { this.state.errorMsg ? <Message negative>{this.state.errorMsg}</Message> : null }
-      </Form>
+      <div className='signUpForm'>
+        <Form onSubmit={this.handleSubmit}>
+          <Link to='/login'>Sign in here</Link>
+          <h4>Register New User</h4>
+          <Label>Email</Label>
+          <Form.Input type="email" name="email" onChange={this.handleChange} required />
+          <Label>Password</Label>
+          <Form.Input type="password" name="password" onChange={this.handleChange} required />
+          <Button type="submit" color="green">Sign Up</Button><br/>
+          { this.state.errorMsg ? <Message negative>{this.state.errorMsg}</Message> : null }
+        </Form>
+      </div>
     )
   }
 }
