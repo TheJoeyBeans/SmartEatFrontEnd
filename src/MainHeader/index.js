@@ -16,6 +16,7 @@ function MainHeader(props){
 				<Button className='headerButton' floated='right' onClick={props.logOut}>Log Out</Button>
 			</Segment>
 			<div className='totalCalories'>
+				<Label size='medium'>Today is: {props.date}</Label><br/>
 				<Label size='large'>Your total number of calories today is: {totalCalories}</Label>
 			</div>
 		</Header>

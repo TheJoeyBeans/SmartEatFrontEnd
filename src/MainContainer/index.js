@@ -26,7 +26,6 @@ class MainContainer extends Component {
 			showEditMealModal: false
 		}
 	}
-
 	componentDidMount(){
 		this.getMeals();
 		this.getFoodItems();
@@ -368,10 +367,10 @@ class MainContainer extends Component {
 	render(){
 		return(
 			<div>
-				<MainHeader meals={this.state.meals} openAndCreate={this.openAndCreate} logOut={this.handleLogout}/>
+				<MainHeader date={this.state.dateToday} meals={this.state.meals} openAndCreate={this.openAndCreate} logOut={this.handleLogout}/>
 				<Grid className='mealList' columns={3} divided textAlign='center' verticalAlign='top'>	
 					<Grid.Row>
-						<MealList meals={this.state.meals} foodItems={this.state.foodItems} openAndEdit={this.openAndEdit} deleteMeal={this.deleteMeal}/>
+						<MealList date={this.state.dateToday} meals={this.state.meals} foodItems={this.state.foodItems} openAndEdit={this.openAndEdit} deleteMeal={this.deleteMeal}/>
 					</Grid.Row>
 				</Grid>
 					<MakeMealForm open={this.state.showMakeMealModal} close={this.closeModalAndMakeMeal} closeNoEdit={this.closeModal}/>
