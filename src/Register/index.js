@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Label, Button, Message } from 'semantic-ui-react';
+import { Form, Label, Button, Message, Icon, Header, Segment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 class Register extends Component {
@@ -23,7 +23,7 @@ class Register extends Component {
   // Submission of register in form
   handleSubmit = async (e) => {
     e.preventDefault();
-    const registrationUrl = `${process.env.REACT_APP_API_URL}/api/v1/user/register`; // localhost:8000/api/v1/user/register
+    const registrationUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/user/register`; // localhost:8000/api/v1/user/register
     console.log(registrationUrl)
     const registerResponse = await fetch(registrationUrl, {
       method: 'POST',
@@ -52,17 +52,24 @@ class Register extends Component {
 
   render() {
     return (
-      <div className='signUpForm'>
-        <Form onSubmit={this.handleSubmit}>
-          <Link to='/login'>Sign in here</Link>
-          <h4>Register New User</h4>
-          <Label>Email</Label>
-          <Form.Input type="email" name="email" onChange={this.handleChange} required />
-          <Label>Password</Label>
-          <Form.Input type="password" name="password" onChange={this.handleChange} required />
-          <Button type="submit" color="green">Sign Up</Button><br/>
-          { this.state.errorMsg ? <Message negative>{this.state.errorMsg}</Message> : null }
-        </Form>
+      <div>
+        <Header>
+          <Segment style={{backgroundColor: '#339966', height: '60px'}}>
+            <h1 className='appTitle'><Icon name='heart'/>Eat Smart</h1>
+          </Segment>
+        </Header>
+        <div className='signUpForm'>
+          <Form onSubmit={this.handleSubmit}>
+            <h4>Register New User</h4>
+            <Icon style={{margin: '0 5px'}} className="signUpIcon" name='mail'>Email</Icon>
+            <Form.Input style={{margin: '10px 0'}} type="email" name="email" placeholder='Email' onChange={this.handleChange} required />
+            <Icon style={{margin: '0 5px'}} className="signUpIcon" name='lock'>Password</Icon>
+            <Form.Input style={{margin: '10px 0'}} type="password" name="password" placeholder='Password' onChange={this.handleChange} required />
+            <Button style={{margin: '10px 0'}} type="submit" color="green">Sign Up</Button><br/>
+            { this.state.errorMsg ? <Message negative>{this.state.errorMsg}</Message> : null }
+            <Link to='/login'>Sign in here</Link>
+          </Form>
+        </div>
       </div>
     )
   }

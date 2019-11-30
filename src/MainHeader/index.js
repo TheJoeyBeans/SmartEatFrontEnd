@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Segment, Header, List, Button, Label, Grid } from 'semantic-ui-react';
+import { Segment, Header, List, Button, Label, Grid, Icon } from 'semantic-ui-react';
 
 function MainHeader(props){
 	console.log(props.meals)
@@ -10,16 +10,29 @@ function MainHeader(props){
 	});
 
 	return(
-		<Header>
-			<Segment style={{backgroundColor: '#339966', height: '60px'}}>
-				<Button className='headerButton' floated='left' onClick={props.openAndCreate}>Make a Meal</Button>
-				<Button className='headerButton' floated='right' onClick={props.logOut}>Log Out</Button>
-			</Segment>
+		<div>
+			<Header>
+				<Segment style={{backgroundColor: '#339966'}}>
+					<Grid columns={3} divided>
+						<Grid.Row>
+							<Grid.Column>
+								<Button className='headerButton' onClick={props.openAndCreate}><Icon name='write'/>Make a Meal</Button>
+							</Grid.Column>
+							<Grid.Column>
+								<h1 className='appTitle'><Icon name='heart'/>Eat Smart</h1>
+							</Grid.Column>
+							<Grid.Column>
+								<Button className='headerButton' floated='right' onClick={props.logOut}>Log Out</Button>
+							</Grid.Column>
+						</Grid.Row>
+					</Grid>
+				</Segment>
+			</Header>
 			<div className='totalCalories'>
 				<Label size='medium'>Today is: {props.date}</Label><br/>
 				<Label size='large'>Your total number of calories today is: {totalCalories}</Label>
 			</div>
-		</Header>
+		</div>
 	)
 		
 }
