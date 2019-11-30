@@ -39,7 +39,7 @@ class MainContainer extends Component {
 		let year = newDate.getFullYear();
 		const fullDate = `${month}/${date}/${year}`;
 		this.setState({
-			today: fullDate
+			dateToday: fullDate
 		});
 	}
 	getMeals = async () => {
@@ -111,6 +111,7 @@ class MainContainer extends Component {
 			'calories' : totalCal,
 			'date_created' : this.state.dateToday
 		}
+		console.log(mealBody, "this is mealBody");
 		e.preventDefault();
 		try {
 			const createdMealResponse = await fetch(process.env.REACT_APP_API_URL + '/api/v1/meals/', {
