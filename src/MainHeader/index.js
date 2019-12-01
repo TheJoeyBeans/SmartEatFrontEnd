@@ -22,7 +22,7 @@ function MainHeader(props){
 								<h1 className='appTitle'><Icon name='heart'/>Eat Smart</h1>
 							</Grid.Column>
 							<Grid.Column>
-								<Button className='headerButton' floated='right' onClick={props.logOut}>Log Out</Button>
+								<Button className='headerButton' floated='right' onClick={props.logOut}><Icon name='sign-out'/>Log Out</Button>
 							</Grid.Column>
 						</Grid.Row>
 					</Grid>
