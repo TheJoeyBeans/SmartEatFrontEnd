@@ -236,9 +236,10 @@ class MainContainer extends Component {
 					'creator': mealList[i].creator
 				}
 					const foodItemId = mealList[i].id
-					console.log(foodBody, "this is foodBody")
+					console.log(foodBody.food_unique_id, "this is food_unique_id")
+					console.log(mealList[i].food_unique_id, "this is the food_unique_id from the mealList")
 					console.log(foodItemId, "this is foodItemId")
-				if(foodItemId != null){
+				if(foodItemId != null && foodBody.food_unique_id != mealList[i].food_unique_id){
 					const editFoodItemUrl = `${process.env.REACT_APP_API_URL}/api/v1/foodItems/${foodItemId}/`;
 					console.log(editFoodItemUrl, "this is the edit url")
 					const editResponse = await fetch(editFoodItemUrl, {
@@ -260,10 +261,9 @@ class MainContainer extends Component {
 					});
 					console.log(newFoodItemsListWithEdit, "this is the new food items list with the edit")
 					this.setState({
-						foodItems: newFoodItemsListWithEdit, 
-						foodItemsToEdit: []
+						foodItems: newFoodItemsListWithEdit
 					});
-				} else {
+				} else if(foodItemId == null) {
 					const NewFoodBody = {
 						'food_name': mealList[i].food_name ,
 						'food_calories': mealList[i].food_calories,
@@ -282,7 +282,9 @@ class MainContainer extends Component {
 					const parsedResponse = await createdFoodItemResponse.json();
 					console.log(parsedResponse, "this is the new foodItem")
 					if (parsedResponse.status.code === 201) {
-						this.setState({foodItems: [...this.state.foodItems, parsedResponse.data]})
+						this.setState({
+							foodItems: [...this.state.foodItems, parsedResponse.data]
+						})
 					} else {
 						alert(parsedResponse.status.message);
 					}
@@ -293,6 +295,10 @@ class MainContainer extends Component {
 				console.log('error')
 				console.log(err)
 		}
+
+		this.setState({
+			foodItemsToEdit: []
+		})
 
 	}
 	closeModal = () =>{

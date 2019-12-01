@@ -79,6 +79,15 @@ class EditMealForm extends Component {
 			});
 		}
 	}
+	resetState = (e) => {
+		this.setState({
+			meal_type: '',
+			mealId: '',
+			food: [],
+			foodItemsToDelete: [],
+			query: ''
+		})
+	}
 	render(){
 		const addedFood = this.state.food.map((food, i) =>{
 			return(
@@ -108,6 +117,7 @@ class EditMealForm extends Component {
 							<Button onClick={this.fetchSearchResults}>Add Food</Button>
 							<li className='foodList'>{addedFood}</li>
 						<Button type='Submit' onClick={(e) => {
+								this.resetState();
 								this.props.close(e, this.state);
 								this.props.delete(this.state.foodItemsToDelete);
 							}}>Finish Edits</Button>
