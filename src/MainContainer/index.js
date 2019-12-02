@@ -31,6 +31,7 @@ class MainContainer extends Component {
 		this.getFoodItems();
 		this.getDate();
 	}
+	//Gets current date and sets it in state.
 	getDate(){
 		let newDate = new Date();
 		let date = newDate.getDate();
