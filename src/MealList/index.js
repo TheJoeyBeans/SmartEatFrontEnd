@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Grid } from 'semantic-ui-react';
+import { Card, Button, Grid, Icon } from 'semantic-ui-react';
 
 function MealList(props){
 	console.log(props.meals, "meal props")
@@ -10,8 +10,7 @@ function MealList(props){
 				if(meal.id === foodItem.meal.id){
 					return(
 						<li className='foodList' key={i}>
-							Food Name: {foodItem.food_name}<br/>
-							Calories: {foodItem.food_calories}
+							<Icon name='food'/>{foodItem.food_name} ({foodItem.food_calories} Cal)
 						</li>
 					)
 				}
@@ -30,8 +29,8 @@ function MealList(props){
 							</Card.Description>
 						</Card.Content>
 						<Card.Content extra>
-							<Button floated='left' className='listButton' size='small' onClick={() => props.openAndEdit(meal, props.foodItems)}>Edit Meal</Button>
-							<Button floated='right' className='listButton' size='small' onClick={() => props.deleteMeal(meal.id, props.foodItems)}>Delete Meal</Button>
+							<Button color='green' floated='left' className='listButton' size='small' onClick={() => props.openAndEdit(meal, props.foodItems)}>Edit Meal</Button>
+							<Button color='green' floated='right' className='listButton' size='small' onClick={() => props.deleteMeal(meal.id, props.foodItems)}>Delete Meal</Button>
 						</Card.Content>
 					</Card>
 				</Grid.Column>

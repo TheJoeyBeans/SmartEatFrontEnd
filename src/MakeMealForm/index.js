@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Button, Label, Modal, Icon, Grid } from 'semantic-ui-react';
 import { Searchbar } from 'react-native-paper';
 import axios from 'axios';
+import searchIcon from '../Images/searchIcon.png'
 const apiKey = 'dc1e6e6904af11f3792ca4dad0a5495b';
 const apiId = '230690a4';
 
@@ -71,10 +72,9 @@ class MakeMealForm extends Component {
 				<div key={i}>
 				<Grid.Row>
 					<ul style={{margin: '10px 0px'}}>
-						Name: {food.foodName}<br/>
-						Calories: {food.foodCalories}
-					</ul><br/>
-					<Button size='small' style={{margin: '10px 0px'}} onClick={() => this.removeFood(food.foodId)}>Delete Food</Button><br/>
+						<Icon name='close' color='red' size='big' style={{margin: '10px 0px'}} onClick={() => this.removeFood(food.foodId)}/>
+						{food.foodName} (Calories: {food.foodCalories})
+					</ul>			
 				</Grid.Row>
 				</div>
 			)
@@ -85,7 +85,7 @@ class MakeMealForm extends Component {
 				<Modal.Content>
 					<Form>
 						<Grid.Row>
-						<Label className='mealListLabel'>Which meal is this?</Label>
+						<Label size='large' color='green' className='mealListLabel'>Which meal is this?</Label>
 							<Icon className='closeIcon' name='close' size="large" onClick={this.props.closeNoEdit}/><br/>
 								<select style={{margin: '15px 0px'}} name='meal_type' onChange={this.handleMealType} className="ui dropdown">
 									<option value="breakfast">Breakfast</option>
@@ -95,13 +95,13 @@ class MakeMealForm extends Component {
 								</select><br/>
 						</Grid.Row>
 						<Grid.Row>
-							<Label style={{margin: '0 0 15px 0'}}>What are you eating?</Label><br/>
-								<Searchbar name='input' onChange={this.handleChange} placeholder='Search for food'/><br/>
-								<Button size='small' style={{margin: '10px 0px'}} onClick={this.fetchSearchResults}>Add Food</Button><br/>
+							<Label size='large' color='green' style={{margin: '0 0 15px 0'}}>What are you eating?</Label><br/>
+								<Searchbar icon={searchIcon} name='input' onChange={this.handleChange} placeholder='Search for food'/><br/>
+								<Button color='green' size='small' style={{margin: '10px 0px'}} onClick={this.fetchSearchResults}><Icon name='add'/>Add Food</Button><br/>
 						</Grid.Row>
 								<li className='foodList'>{addedFood}</li>
 						<Grid.Row>
-						<Button floated='right' style={{margin: '10px 0px'}}type='Submit' onClick={(e) => {
+						<Button floated='right' color='green' style={{margin: '10px 0px'}} type='Submit' onClick={(e) => {
 								this.props.close(e, this.state); 
 								this.resetState();
 							}}>Complete Meal</Button>

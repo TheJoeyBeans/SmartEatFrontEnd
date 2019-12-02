@@ -29,8 +29,8 @@ function MainHeader(props){
 				</Segment>
 			</Header>
 			<div className='totalCalories'>
-				<Label size='medium'>Today is: {props.date}</Label><br/>
-				<Label size='large'>Your total number of calories today is: {totalCalories}</Label>
+				<h2 className='headerInfo'>Today is: {props.date}</h2>
+				<h2 className='headerInfo'>Your total number of calories today is:  {totalCalories}</h2><br/>
 			</div>
 		</div>
 	)
