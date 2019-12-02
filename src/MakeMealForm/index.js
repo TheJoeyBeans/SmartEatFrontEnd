@@ -16,16 +16,19 @@ class MakeMealForm extends Component {
 			query: ''
 		}
 	}
+	//Sets the state to match what the search query is. Changes as user types.
 	handleChange = (e) => {
 		this.setState({
 			query: e.currentTarget.value
 		})
 	}
+	//Changes the mealType to what the user selects from the drop down menu.
 	handleMealType = (e) => {
 		this.setState({
 			meal_type: e.currentTarget.value
 		})
 	}
+	//Uses an external api to pull data from. If any food data cannot be found, an alert will be triggered. 
 	fetchSearchResults = (query) => {
 		const searchUrl = `https://api.edamam.com/api/food-database/parser?ingr=${this.state.query}&app_id=${apiId}&app_key=${apiKey}`;
 		axios.get(searchUrl, {
@@ -33,7 +36,6 @@ class MakeMealForm extends Component {
 				'Content-Type': 'application/json'
 			}
 		}).then(response =>{
-			console.log(response, "I am the response");
 			if(response.data.parsed[0] === undefined){
 				alert('Food cannot be found!')
 			} else {
@@ -53,6 +55,7 @@ class MakeMealForm extends Component {
 			}
 		})
 	}
+	//Resets the state completely when the editModal is closed
 	resetState = () => {
 		this.setState({
 			meal_type: 'breakfast',
@@ -60,6 +63,7 @@ class MakeMealForm extends Component {
 			query: ''
 		})
 	}
+	//Foods that are added but no longer needed are filtered out of the food in the state
 	removeFood = (i) => {
 		console.log(i)
 		this.setState({

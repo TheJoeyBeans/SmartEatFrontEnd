@@ -18,6 +18,7 @@ class EditMealForm extends Component {
 			query: ''
 		}
 	}
+	//Uses props passed down from the main Container to set the state with the prop items. 
 	componentWillReceiveProps(nextProps){
 		if(nextProps.meal.meal_type !== this.props.meal.meal_type){
 			this.setState({
@@ -27,16 +28,19 @@ class EditMealForm extends Component {
 			})
 		}
 	}
+	//Sets the state to match what the search query is. Changes as user types. 
 	handleChange = (e) => {
 		this.setState({
 			query: e.currentTarget.value
 		})
 	}
+	//Changes the mealType to what the user selects from the drop down menu. 
 	handleMealType = (e) => {
 		this.setState({
 			meal_type: e.currentTarget.value
 		})
 	}
+	//Uses an external api to pull data from. If any food data cannot be found, an alert will be triggered. 
 	fetchSearchResults = (query) => {
 		const searchUrl = `https://api.edamam.com/api/food-database/parser?ingr=${this.state.query}&app_id=${apiId}&app_key=${apiKey}`;
 		axios.get(searchUrl, {
@@ -44,22 +48,28 @@ class EditMealForm extends Component {
 				'Content-Type': 'application/json'
 			}
 		}).then(response =>{
-			console.log(response.data, "I am the response");
-			const foodUniqueId = response.data.parsed[0].food.foodId
-			const foodText = response.data.text;
-			const foodCal = response.data.parsed[0].food.nutrients.ENERC_KCAL
-			this.setState(state =>{
-				const food = state.food.concat({
-					food_name: foodText,
-					food_calories: foodCal,
-					food_unique_id: foodUniqueId
-				});
-				return{
-					food
-				}
-			})
+			if(response.data.parsed[0] === undefined){
+				alert('Food cannot be found!')
+			} else {
+				const foodUniqueId = response.data.parsed[0].food.foodId
+				const foodText = response.data.text;
+				const foodCal = response.data.parsed[0].food.nutrients.ENERC_KCAL
+				this.setState(state =>{
+					const food = state.food.concat({
+						food_name: foodText,
+						food_calories: foodCal,
+						food_unique_id: foodUniqueId
+					});
+					return{
+						food
+					}
+				})
+			}
 		})
 	}
+	//Food that has been added but is no longer needed will be removed and 
+	//if the food item already existed when the edit opened, they'll be deleted
+	//upon closing the edit modal. 
 	removeFood = (i, foodItems) => {
 		console.log(i)
 		console.log(foodItems)
@@ -80,6 +90,7 @@ class EditMealForm extends Component {
 			});
 		}
 	}
+	//Resets the state completely when the editModal is closed
 	resetState = (e) => {
 		this.setState({
 			meal_type: '',

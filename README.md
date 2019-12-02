@@ -1,68 +1,33 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+USERSTORIES:
 
-## Available Scripts
+User can make a meal list which tracks food for breakfast, lunch, or dinner. 
 
-In the project directory, you can run:
+User can add food/drink items to their meal lists via search or manual input. 
 
-### `npm start`
+Food/drink items found via search will have calories attached to them. 
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Total calories for the day will be displayed at the top of the page. 
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+User can set daily caloric intake goal, daily calories will turn red if calories intake becomes greater than goal set by the user. 
 
-### `npm test`
+WIREFRAMES: https://imgur.com/Jx5cx6i
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+-Model Outline: 
 
-### `npm run build`
+Meal-Type: text, (Drop down list of Breakfast, lunch, dinner, or snack)
+Food: [ {
+	Name: text, 
+	calories: integer 
+} ]
+Daily Calorie Goal: Number
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Created API will contain data of the meals, 
+External nutrition API will be fetched to populate search results with food names and calories. 
 
-### `npm run eject`
+Users NOT logged in should be able to use search functionality to find food with caloric values. 
+Users logged in will be able to make their meal lists. 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Potential Stretch Goals: 
+Users can add “Frequent” foods/drinks which will allow them to select that 

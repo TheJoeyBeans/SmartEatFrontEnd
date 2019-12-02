@@ -24,7 +24,6 @@ class Register extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     const registrationUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/user/register`; // localhost:8000/api/v1/user/register
-    console.log(registrationUrl)
     const registerResponse = await fetch(registrationUrl, {
       method: 'POST',
       body: JSON.stringify(this.state),
@@ -37,8 +36,7 @@ class Register extends Component {
     const parsedResponse = await registerResponse.json();
   
     if (parsedResponse.status.code === 201) {
-      console.log('Sign up successful');
-      console.log(parsedResponse.data.id, 'userId');
+      //Once a user registers they are logged in and the sessionUserId is set to their userId. 
       sessionStorage.clear();
       sessionStorage.setItem('sessionUserId', parsedResponse.data.id);
       this.props.history.push('/meals'); // Change url to /dogs programmatically with react-router

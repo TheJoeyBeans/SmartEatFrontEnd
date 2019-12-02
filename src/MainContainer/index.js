@@ -42,6 +42,8 @@ class MainContainer extends Component {
 			dateToday: fullDate
 		});
 	}
+	//Get meal data, state will only be set with the meals with creator ids that match the current logged
+	//in user ID.
 	getMeals = async () => {
 		try {
 			const meals = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/', {
@@ -50,18 +52,18 @@ class MainContainer extends Component {
 			});
 			const parsedMeals = await meals.json();
 			const parsedMealsList = [];
-			console.log(parsedMeals.data, 'this is parsedMeals')
 			for(let i = 0; i < parsedMeals.data.length; i++){
 				if(this.state.sessId === parsedMeals.data[i].creator.id.toString()){
 					parsedMealsList.push(parsedMeals.data[i]);
 				}
 			}
-			console.log(parsedMealsList, "this is the parsed meals list")
 			this.setState({meals: parsedMealsList});
 		} catch(err){
 			console.log(err);
 		}
 	}
+	//Gets food items, just like with meals the only food items that are set to state are those with creator ids
+	//that match the current logged in user. 
 	getFoodItems = async () => {
 		try {
 			const foodItems = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/', {
@@ -82,11 +84,14 @@ class MainContainer extends Component {
 			console.log(err);
 		}
 	}
+	//Make Meal modal is displayed 
 	openAndCreate = () =>{
 		this.setState({
 			showMakeMealModal: true
 		})
 	}
+	//Edit meal modal is displayed, the meal and food items from the selected meal are set in state as 
+	//mealToEdit and foodItemToEdit
 	openAndEdit = (mealFromTheList, foodItems) => {
 		this.setState({
 			mealToEdit: {
@@ -98,6 +103,7 @@ class MainContainer extends Component {
 		});
 		this.setState({foodItemsToEdit: foodItems.filter((foodItem) => foodItem.meal.id === mealFromTheList.id)})
 	}
+	//MakeMealModal is closed and the POST route for meals is called to create a new meal and store it to the database.
 	closeModalAndMakeMeal = async (e, meal) =>{
 		const mealKind = meal.meal_type;
 		let mealList = meal.food;
@@ -106,12 +112,13 @@ class MainContainer extends Component {
 		for(let i = 0; i < meal.food.length; i++){
 			totalCal += meal.food[i].foodCalories
 		}
+		//The meal is set with a date_create which will reflect the current date as set by the state upon mounting
+		//the app components
 		const mealBody = {
 			'meal_type' : mealKind,
 			'calories' : totalCal,
 			'date_created' : this.state.dateToday
 		}
-		console.log(mealBody, "this is mealBody");
 		e.preventDefault();
 		try {
 			const createdMealResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/', {
@@ -133,11 +140,14 @@ class MainContainer extends Component {
 			console.log('error')
 			console.log(err)
 		}
+		//MakeMealModal is no longer displayed after the meal is created. 
 		this.setState({
 			showMakeMealModal: false
 		})
 		this.createFoodItem(mealId, mealList);
 	}
+	//After a meal is created, the createFoodItem method is called, which will create food_items from within the 
+	//created meal and store them to their own table in the database
 	createFoodItem = async (mealId, mealList) => {
 
 		try {
@@ -169,8 +179,8 @@ class MainContainer extends Component {
 		}
 
 	}
+	//The editMealModal is closed and edits are made to the apporpriate meal. 
 	closeModalAndEditMeal = async (e, meal) => {
-		console.log(meal, 'this is the meal that will be edited')
 		const mealKind = meal.meal_type;
 		let mealList = meal.food;
 		let totalCal = 0;
@@ -178,7 +188,6 @@ class MainContainer extends Component {
 		for(let i = 0; i < meal.food.length; i++){
 			totalCal += meal.food[i].food_calories
 		}
-		console.log(totalCal, 'this is total calories')
 		const mealBody = {
 			'meal_type' : mealKind,
 			'calories' : totalCal
@@ -187,7 +196,6 @@ class MainContainer extends Component {
 
 		try{
 			const editMealUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/meals/${meal.mealId}/`
-			console.log(editMealUrl, 'this is the URL to be edited')
 			const editResponse = await fetch(editMealUrl, {
 				method: 'PUT',
 				credentials: 'include',
@@ -197,9 +205,8 @@ class MainContainer extends Component {
 				}
 			});
 			const editResponseParsed = await editResponse.json();
-			console.log(editResponseParsed.data, 'this is what has been edited')
 			mealId = editResponseParsed.data.id;
-			console.log(mealId, 'this is the edited mealId')
+			//A new meal list is created which contains the edited meal. 
 			const newMealsListWithEdit = this.state.meals.map((meal) =>{
 				if(meal.id === mealId){
 					meal = editResponseParsed.data
@@ -207,8 +214,8 @@ class MainContainer extends Component {
 
 				return meal
 			});
-
-			console.log(newMealsListWithEdit, "This is the newMealsListWithEdit");
+			//The above created meal list is set to state and mealToEdit is reset to blank values. 
+			//The editMealModal is also closed.
 			this.setState({
 				showEditMealModal: false,
 				meals: newMealsListWithEdit,
@@ -221,12 +228,13 @@ class MainContainer extends Component {
 		} catch(err){
 			console.log(err)
 		}
+		//After the meal is edited, this method is called to edit food items. 
 		this.editFoodItem(e, mealId, mealList);
 	}
 	editFoodItem = async (e, mealId, mealList) => {
-	console.log(mealId, "<--mealId");
-	console.log(mealList, "<--mealList");
-
+		//Since it is possible the user has created new food_items while editing their meals. 
+		//Only fooditems that previously existed before the edit will be sent through the PUT route
+		//Any newly created foodItems will need to go through the POST route. 
 		try {
 			for(let i = 0; i < mealList.length; i++){
 				const foodBody = {
@@ -237,12 +245,10 @@ class MainContainer extends Component {
 					'creator': mealList[i].creator
 				}
 					const foodItemId = mealList[i].id
-					console.log(foodBody.food_unique_id, "this is food_unique_id")
-					console.log(mealList[i].food_unique_id, "this is the food_unique_id from the mealList")
-					console.log(foodItemId, "this is foodItemId")
+				//Checks to make sure if food Items have previously existed, and that if the user made no changes
+				//the item is not put through the PUT route. 
 				if(foodItemId != null && foodBody.food_unique_id != mealList[i].food_unique_id){
 					const editFoodItemUrl = `${process.env.REACT_APP_BACKEND_URL}/api/v1/foodItems/${foodItemId}/`;
-					console.log(editFoodItemUrl, "this is the edit url")
 					const editResponse = await fetch(editFoodItemUrl, {
 						method: 'PUT',
 						credentials: 'include',
@@ -251,19 +257,19 @@ class MainContainer extends Component {
 							'Content-Type' : 'application/json'
 						}
 					});
-					console.log(editResponse, "this is the edit response")
 					const editResponseParsed = await editResponse.json();
-					console.log(editResponseParsed, 'parsed edit for foodItems')
 					const newFoodItemsListWithEdit = this.state.foodItems.map((foodItem) =>{
 						if(foodItem.id === editResponseParsed.data.id){
 							foodItem = editResponseParsed.data
 						}
 						return foodItem
 					});
-					console.log(newFoodItemsListWithEdit, "this is the new food items list with the edit")
+					//State is set with the foodItems incluing the newly edited items. 
 					this.setState({
 						foodItems: newFoodItemsListWithEdit
 					});
+					//If new food items are created during the edit, they won't have a foodItemId so they will be 
+					//sent through the following POST route. 
 				} else if(foodItemId == null) {
 					const NewFoodBody = {
 						'food_name': mealList[i].food_name ,
@@ -281,7 +287,6 @@ class MainContainer extends Component {
 						}
 					});
 					const parsedResponse = await createdFoodItemResponse.json();
-					console.log(parsedResponse, "this is the new foodItem")
 					if (parsedResponse.status.code === 201) {
 						this.setState({
 							foodItems: [...this.state.foodItems, parsedResponse.data]
@@ -296,12 +301,13 @@ class MainContainer extends Component {
 				console.log('error')
 				console.log(err)
 		}
-
+		//Reset the foodItemsToEdit in state
 		this.setState({
 			foodItemsToEdit: []
 		})
-
 	}
+	//In case a user decideds to make no changes after clicking edit/make this method is called so that the user can 
+	//exit out of the edit/make modal without having any data save.
 	closeModal = () =>{
 		this.setState({
 			showMakeMealModal: false, 
@@ -314,23 +320,19 @@ class MainContainer extends Component {
 			foodItemsToEdit: []
 		})
 	}
+	//Deletes selected meals, also loops through foodItems associated with the meal to delete them as well. 
 	deleteMeal = async (id, foodItems) => {
-		console.log(id, "This is the meal ID")
-		console.log(foodItems, "this is the foodItems of the meal")
 		const deleteMealResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/meals/' + id +'/', {
 			method: 'DELETE',
 			credentials: 'include'
 		});
 		const deleteMealParsed = await deleteMealResponse.json();
-		console.log(deleteMealParsed, "<---- this is deleteMealParsed")
-
 		if (deleteMealParsed.status.code === 200){
-			console.log(deleteMealParsed, ' response from Flask server')
 			this.setState({meals: this.state.meals.filter((meal) => meal.id !== id)})
 		} else {
 			alert(deleteMealParsed.status.message);
 		}
-
+	//Loops through food items and deletes any that share the same MealId as the above deleted meal.
 		for(let i = 0; i < foodItems.length; i++){
 			if(foodItems[i].meal.id === id){
 				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
@@ -338,10 +340,7 @@ class MainContainer extends Component {
 					credentials: 'include'
 				});
 				const deleteFoodItemParsed = await deleteFoodItemResponse.json();
-				console.log(deleteFoodItemParsed, "<---- this is deleteFoodItemParsed")
-
 				if (deleteFoodItemParsed.status.code === 200){
-					console.log(deleteFoodItemParsed, ' deletedFoodItemParsed, response from Flask server')
 					this.setState({foodItems: this.state.foodItems.filter((foodItem) => foodItem.id !== foodItems[i].id)})
 				} else {
 					alert(deleteFoodItemParsed.status.message);
@@ -349,27 +348,26 @@ class MainContainer extends Component {
 			}
 		}
 	}
+	//If a user edits a meal and needs to delete a food item, this is the method that will be called to delete the foodItem
 	deleteFoodItem = async (foodItems) =>{
-		console.log(foodItems, "This is the food item you're trying to delete")
 		for(let i = 0; i < foodItems.length; i++){
 				const deleteFoodItemResponse = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/v1/foodItems/' + foodItems[i].id + '/', {
 					method: 'DELETE',
 					credentials: 'include'
 				});
 				const deleteFoodItemParsed = await deleteFoodItemResponse.json();
-				console.log(deleteFoodItemParsed, "<---- this is deleteFoodItemParsed")
-
 				if (deleteFoodItemParsed.status.code === 200){
-					console.log(deleteFoodItemParsed, ' deletedFoodItemParsed, response from Flask server')
 					this.setState({foodItems: this.state.foodItems.filter((foodItem) => foodItem.id !== foodItems[i].id)})
 				} else {
 					alert(deleteFoodItemParsed.status.message);
 			}
+			//foodItemsToEdit are reset
 			this.setState({
 				foodItemsToEdit: []
 			});
 		}	
 	}
+	//clears sessionStorage and returns the user to login page. 
 	handleLogout = (e) => {
 		sessionStorage.clear();
 		this.props.history.push('/login');

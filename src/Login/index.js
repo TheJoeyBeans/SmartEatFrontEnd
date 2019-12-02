@@ -36,8 +36,7 @@ class Login extends Component {
     const parsedResponse = await  loginResponse.json();
   
     if (parsedResponse.status.code === 200) {
-      console.log('Sign up successful');
-      console.log(parsedResponse.data.id, 'userId');
+      //upon logging in, sessionUserId is set to the user ID
       sessionStorage.clear();
       sessionStorage.setItem('sessionUserId', parsedResponse.data.id);
       this.props.history.push('/meals'); // Change url to /dogs programmatically with react-router
